@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap # Type of k8s workload
+metadata:
+  name: db-config # Name of the config map
+data:
+  # Actual data used in the deployment
+  DATABASE_URL: "postgresql://mydatabase_hgfo_user:HgTFihG1eLJ6FoNT2SZWrCPlbpatc7af@dpg-cr3vatg8fa8c73ddl3a0-a.singapore-postgres.render.com/mydatabase_hgfo"

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment # Type of k8s workload
+metadata:
+  name: book-catalog # Name of this deployment
+spec:
+  replicas: 1 # Number of replica pod for this deployment
+  selector:
+    matchLabels: 
+      app: book-catalog # A key-value set used to match the label of pods
+  template:
+    metadata:
+      labels:
+        app: book-catalog # The label  used to identify and select Pods
+    spec:
+      containers:
+      - name: book-catalog # Container name
+        image: bookcatalog:1 # Image
+        imagePullPolicy: IfNotPresent # Image pull policy, pull image from repository if required image is not found in local environment
+        ports: 
+        - containerPort: 8000 # Port exposed by container, same as the EXPOSE in Dockerfile
+        env: # Environment variables
+        - name: DATABASE_URL # Name of the environment variables
+          valueFrom:
+            configMapKeyRef: # Read value of the variable from config map
+              name: db-config # Name of the config map
+              key: DATABASE_URL # Formal name of the variable in config map
+
+---
+
+apiVersion: v1
+kind: Service # Type of k8s workload
+metadata:
+  name: bookcatalog-service # Name of this service
+spec:
+  selector:
+    app: book-catalog
+  type: NodePort
+  ports:
+  - port: 8000 # K8s cluster exposed port
+  targetPort: 8000 # conbtainer port - same as the value of EXPOSE in DOckerfile
+    nodePort: 31395 # Port exposed on K8s node - actual port for external access
